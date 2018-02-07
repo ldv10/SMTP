@@ -155,7 +155,7 @@ public void lector()
 	{
 		boolean temp;			
 		
-		temp = Pattern.matches("(DATA)|(data)|(ladata)", data);
+		temp = Pattern.matches("(DATA)|(data)", data);
 		
 		if(temp)
 		{		
