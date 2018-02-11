@@ -8,21 +8,20 @@ import java.net.Socket;
 
 public class SMTPServer {
 	
-	public static int PUERTO = 80; 
+	public static int PORT = 8080; 
 	
 	public static void main(String args[]) throws Exception
 	{
 
-		System.out.println("Servidor levantado en el puerto: "+PUERTO);
-		ServerSocket s = new ServerSocket(PUERTO);
+		System.out.println("Server listening on port: "+PORT);
+		ServerSocket s = new ServerSocket(PORT);
 		
 		while(true)
 		{				
-			Socket conexion = s.accept(); 		
-			handler request = new handler(conexion);
+			Socket connection = s.accept(); 		
+			RequestHandler request = new RequestHandler(connection);
 			Thread thread = new Thread(request);
 			thread.start();
-			
 		}					
 	}
 }
