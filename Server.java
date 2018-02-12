@@ -6,7 +6,7 @@
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class SMTPServer {
+public class Server {
 	
 	public static int PORT = 8080; 
 	
@@ -19,7 +19,7 @@ public class SMTPServer {
 		while(true)
 		{				
 			Socket connection = s.accept(); 		
-			RequestHandler request = new RequestHandler(connection);
+			SMTPHandler request = new SMTPHandler(connection);
 			Thread thread = new Thread(request);
 			thread.start();
 		}					

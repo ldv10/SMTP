@@ -52,12 +52,12 @@ async function sendEmail(info){
           }
           break
         case "354":
-          client.write('Subject: ' + info.subject + '\n', 'utf-8', () => console.log('client wrote Subject: ' + info.subject + '\n'))
-          client.write('From: ' + info.from + '\n', 'utf-8', () => console.log('client wrote From: ' + info.from + '\n'))
-          client.write('To: ' + info.to + '\n', 'utf-8', () => console.log('client wrote To: ' + info.to + '\n'))
+          client.write('Subject: ' + info.subject + '\n', 'utf-8', () => console.log('client wrote Subject: ' + info.subject))
+          client.write('From: ' + info.from + '\n', 'utf-8', () => console.log('client wrote From: ' + info.from))
+          client.write('To: ' + info.to + '\n', 'utf-8', () => console.log('client wrote To: ' + info.to))
           client.write('\n', 'utf-8', () => console.log('client wrote new line'))
-          client.write(info.message + '\n', 'utf-8', () => console.log('client wrote ' + info.message + '\n'))
-          client.write('.\n', 'utf-8', () => console.log('client wrote .\n'))
+          client.write(info.message + '\n', 'utf-8', () => console.log('client wrote ' + info.message))
+          client.write('.\n', 'utf-8', () => console.log('client wrote .'))
           break
         case "221":
           client.end()

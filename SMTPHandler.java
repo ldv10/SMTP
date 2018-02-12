@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-class RequestHandler implements Runnable{
+class SMTPHandler implements Runnable{
 
 	private Socket connection;
 	private BufferedReader input;
@@ -21,7 +21,7 @@ class RequestHandler implements Runnable{
 	private String emailRegex = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
 	private static final String EMPTY_STRING = "";
 	
-	public RequestHandler(Socket connection) throws IOException
+	public SMTPHandler(Socket connection) throws IOException
 	{
 		this.connection = connection;
 		this.input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
