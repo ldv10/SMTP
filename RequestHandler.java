@@ -54,21 +54,11 @@ class RequestHandler implements Runnable{
 			}
 			else if (!breakOK && dataOK && rcptOK && fromOK && heloOK)
 			{
-				String temp = "";
-				while(!breakOK)
-				{
-					dataMemory.concat(temp);
-					temp = readSocket();
-					breakOK = temp.equals(".");
-					if(breakOK)
-					{
-						System.out.println(whoami.getName().concat(" received end of data"));
-					}
-				}
+				processBreak(currentCommand);
 			} else {
 				if(!processQuit(currentCommand))
 				{
-					writeSocket("500 Syntax error, command unrecognised\n");
+					writeSocket("500 Syntax error, command unrecognized\n");
 				}
 			}
 	  }
@@ -87,7 +77,7 @@ class RequestHandler implements Runnable{
 		{
 			return false;
 		}
-		writeSocket("500 Syntax error, command unrecognised\n");
+		writeSocket("500 Syntax error, command unrecognized\n");
 		return false;		
 	}
 
@@ -102,7 +92,7 @@ class RequestHandler implements Runnable{
 		{
 			return false;
 		}
-		writeSocket("500 Syntax error, command unrecognised\n");
+		writeSocket("500 Syntax error, command unrecognized\n");
 		return false;
 	}
 
@@ -117,7 +107,7 @@ class RequestHandler implements Runnable{
 		{
 			return false;
 		}
-		writeSocket("500 Syntax error, command unrecognised\n");
+		writeSocket("500 Syntax error, command unrecognized\n");
 		return false;		
 	}
 	
@@ -132,8 +122,24 @@ class RequestHandler implements Runnable{
 		{
 			return false;
 		}
-		writeSocket("500 Syntax error, command unrecognised\n");
+		writeSocket("500 Syntax error, command unrecognized\n");
 		return false;
+	}
+
+	private void processBreak(String data)
+	{
+		String temp = data;
+		while(!breakOK)
+		{
+			this.dataMemory.concat(temp);
+			temp = readSocket();
+			this.breakOK = temp.equals(".");
+			if(breakOK)
+			{
+				System.out.println(String.valueOf(whoami.getId()).concat(" received end of data"));
+				writeSocket("250 OK\n");
+			}
+		}
 	}
 
 	private boolean processQuit(String data)
@@ -153,11 +159,11 @@ class RequestHandler implements Runnable{
 		try 
 		{
 			output.write(message.getBytes());
-			System.out.println(whoami.getName().concat(" wrote: ").concat(message));
+			System.out.println(String.valueOf(whoami.getId()).concat(" wrote: ").concat(message));
 		} 
 		catch(Exception e)
 		{
-			System.err.println(whoami.getName().concat(": Caught Exception: ").concat(e.getMessage()));
+			System.err.println(String.valueOf(whoami.getId()).concat(": Caught Exception: ").concat(e.getMessage()));
 			this.quitOK = true;
 		}
 	}
@@ -169,7 +175,7 @@ class RequestHandler implements Runnable{
 			String result = input.readLine();
 			if (result != null)
       {
-      	System.out.println(whoami.getName().concat(" received: ").concat(result));
+      	System.out.println(String.valueOf(whoami.getId()).concat(" received: ").concat(result));
 				return result;
       }
       this.quitOK = true;
@@ -177,7 +183,7 @@ class RequestHandler implements Runnable{
 		}
 		catch(Exception e)
 		{
-			System.err.println(whoami.getName().concat(": Caught Exception: ").concat(e.getMessage()));
+			System.err.println(String.valueOf(whoami.getId()).concat(": Caught Exception: ").concat(e.getMessage()));
 			this.quitOK = true;
 		}
 		
@@ -192,7 +198,7 @@ class RequestHandler implements Runnable{
 		}
 		catch(Exception e)
 		{
-			System.err.println(whoami.getName().concat(": Caught Exception: ").concat(e.getMessage()));
+			System.err.println(String.valueOf(whoami.getId()).concat(": Caught Exception: ").concat(e.getMessage()));
 		}
 	}
 }
