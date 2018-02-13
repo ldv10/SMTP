@@ -5,9 +5,7 @@ const bodyParser = require('body-parser')
 const app = express()
 
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({
-  extended: true
-}))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(__dirname+'public'))
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname+'/public/form.html')))
@@ -80,4 +78,4 @@ async function sendEmail(info){
   }
 }
 
-app.listen(8081, () => console.log('Client listening on port 8081'))
+app.listen(8082, () => console.log('Client listening on port 8082'))

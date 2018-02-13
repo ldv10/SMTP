@@ -1,32 +1,27 @@
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
-class SMTPHandler implements Runnable{
-
+class SMTPHandler implements Runnable
+{
 	private Socket connection;
 	private BufferedReader input;
 	private DataOutputStream output;
 	private Thread whoami;
 	private Boolean heloOK = false, fromOK = false, rcptOK = false, dataOK = false, breakOK = false, quitOK = false;
-	private String dataMemory = "";
+	private String dataMemory = "", fromMemory = "", toMemory = "";
 	private String emailRegex = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
 	private static final String EMPTY_STRING = "";
+	private DatabaseConnection db;
 	
-	public SMTPHandler(Socket connection) throws IOException
+	public SMTPHandler(Socket connection) throws Exception
 	{
 		this.connection = connection;
 		this.input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		this.output = new DataOutputStream(connection.getOutputStream());
-		this.whoami = Thread.currentThread();		
+		this.whoami = Thread.currentThread();
 	}	
 	
 	@Override
@@ -85,6 +80,8 @@ class SMTPHandler implements Runnable{
 	{
 		if(Pattern.matches("MAIL\\s+FROM:\\s+<".concat(emailRegex).concat(">"), data))
 		{
+			String email = parseEmail(data);
+			this.fromMemory = email;
 			writeSocket("250 OK\n");
 			return true;
 		}
@@ -100,6 +97,8 @@ class SMTPHandler implements Runnable{
 	{			
 		if(Pattern.matches("RCPT\\s+TO:\\s+<".concat(emailRegex).concat(">"), data))
 		{
+			String email = parseEmail(data);
+			this.toMemory = email;
 			writeSocket("250 OK\n");
 			return true;											
 		} 
@@ -131,14 +130,32 @@ class SMTPHandler implements Runnable{
 		String temp = data;
 		while(!breakOK)
 		{
-			this.dataMemory.concat(temp);
+			this.dataMemory = this.dataMemory.concat(" ").concat(temp);
 			temp = readSocket();
 			this.breakOK = temp.equals(".");
 			if(breakOK)
 			{
-				System.out.println(String.valueOf(whoami.getId()).concat(" received end of data"));
+				System.out.println(String.valueOf(whoami.getId()).concat(" received end of data"));	
+			}
+		}
+
+		this.db = new DatabaseConnection("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/mailserver", "postgres", "");
+
+		if(this.db.isConnected())
+		{
+			if(this.db.executeUpdate(String.format("INSERT INTO public.mails (\"from\", \"to\", \"data\") VALUES ('%s', '%s', '%s')", this.fromMemory, this.toMemory, this.dataMemory)))
+			{
 				writeSocket("250 OK\n");
 			}
+			else
+			{
+				writeSocket("421 Service not available, closing transmission channel\n");		
+			}
+			this.db.closeConnection();
+		}
+		else
+		{
+			writeSocket("421 Service not available, closing transmission channel\n");
 		}
 	}
 
@@ -200,5 +217,20 @@ class SMTPHandler implements Runnable{
 		{
 			System.err.println(String.valueOf(whoami.getId()).concat(": Caught Exception: ").concat(e.getMessage()));
 		}
+	}
+
+	private String parseEmail(String data)
+	{
+		String result = "";
+		try
+		{
+			String[] parsedBySpace = data.split("\\s+");
+			result = parsedBySpace[2].substring(1, parsedBySpace[2].length()-1);
+		}
+		catch(Exception e)
+		{
+			System.err.println(String.valueOf(whoami.getId()).concat(": Caught Exception: ").concat(e.getMessage()));	
+		}
+		return result;
 	}
 }
