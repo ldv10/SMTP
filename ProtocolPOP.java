@@ -28,7 +28,7 @@ public class ProtocolPOP implements Runnable
       try
       {
         Socket connection = server.accept();
-        SMTPHandler request = new SMTPHandler(connection);
+        POPHandler request = new POPHandler(connection);
         Thread thread = new Thread(request);
         thread.start();
       } 

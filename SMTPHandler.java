@@ -189,7 +189,7 @@ class SMTPHandler implements Runnable
 	{
 		try
 		{
-			String result = input.readLine();
+			String result = this.input.readLine();
 			if (result != null)
       {
       	System.out.println(String.valueOf(whoami.getId()).concat(" received: ").concat(result));
