@@ -22,6 +22,7 @@ class SMTPHandler implements Runnable
 		this.input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		this.output = new DataOutputStream(connection.getOutputStream());
 		this.whoami = Thread.currentThread();
+		this.db = new DatabaseConnection("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/mailserver", "postgres", "");
 	}	
 	
 	@Override
@@ -57,7 +58,7 @@ class SMTPHandler implements Runnable
 				}
 			}
 	  }
-
+	  this.db.closeConnection();
 	  closeSocket();
 	}
 
@@ -138,9 +139,6 @@ class SMTPHandler implements Runnable
 				System.out.println(String.valueOf(whoami.getId()).concat(" received end of data"));	
 			}
 		}
-
-		this.db = new DatabaseConnection("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/mailserver", "postgres", "");
-
 		if(this.db.isConnected())
 		{
 			if(this.db.executeUpdate(String.format("INSERT INTO public.mails (\"from\", \"to\", \"data\") VALUES ('%s', '%s', '%s')", this.fromMemory, this.toMemory, this.dataMemory)))
@@ -151,7 +149,6 @@ class SMTPHandler implements Runnable
 			{
 				writeSocket("421 Service not available, closing transmission channel\n");		
 			}
-			this.db.closeConnection();
 		}
 		else
 		{
