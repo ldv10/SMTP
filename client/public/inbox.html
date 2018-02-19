@@ -7,19 +7,11 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css">
+
 </head>
 <body>
 
 
-<div class="container">
-    <div class="row">
-
-        <div class="col-sm-9 col-md-1">
-            <!-- Split button -->
-           
-            <button type="button" class="btn btn-default" data-toggle="tooltip" title="Refresh">
-                &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;&nbsp;</button>
 
         </div>
 
@@ -27,58 +19,34 @@
             <a href="form.html" target="_blank" class="btn btn-danger btn-sm btn-block" role="button"><i class="glyphicon glyphicon-edit"></i> Escribir</a>
         </div>
     </div>
-    <hr>
-    <div class="row">
+   
 
-        <div class="col-sm-9 col-md-10">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#home" data-toggle="tab"><span class="glyphicon glyphicon-inbox">
-                </span>Recibidos</a></li>
-                <li><a href="#profile" data-toggle="tab"><span class="glyphicon glyphicon-send"></span>
-                    Enviados</a></li>
 
-            </ul>
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <div class="tab-pane fade in active" id="home">
-                    <div class="list-group">
-                        <a href="#" class="list-group-item">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox">
-                                </label>
-                            </div>
-                            <span></span><span class="name" style="min-width: 120px;
-                                display: inline-block;">Diego Sosa</span> <span class="">Aqui va asunto</span>
-                            <span class="text-muted" style="font-size: 11px;">- Preview del contenido</span> <span class="badge">Hora de entrada?</span> <span class="pull-right"><span class="glyphicon glyphicon-trash">
-                                </span></span></a><a href="#" class="list-group-item">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox">
-                                        </label>
-                                    </div>
-                                    <span></span><span class="name" style="min-width: 120px;
-                                        display: inline-block;">Sexosa</span> <span class="">Asunto</span>
-                                    <span class="text-muted" style="font-size: 11px;">- Preview..</span> <span class="badge">hora?</span> <span class="pull-right"><span class="glyphicon glyphicon-trash">
-                                        
-                                            
-                                            
-                                             </a>
-                    </div>
+<form method="post" id="correo" name="correo">
+                <div class="col-lg-12 tabla">
+                    <label> <b> Bandeja de entrada</b></label>
+                    <table class="table table-condensed table-bordered table-responsive" 
+                           id="tdetalle">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-xs-1" style="display:none">ID</th>
+                                <th class="text-center col-xs-1">De</th>
+                                <th class="text-center col-xs-1">Asunto</th>
+                                <th class="text-center col-xs-2">Contenido</th>
+                                <th class="text-center col-xs-1">Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
-                <div class="tab-pane fade in" id="profile">
-                    <div class="list-group">
-                        <div class="list-group-item">
-                            <span class="text-center">Vacio.</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+            </form>
 
+<form action = "cambiar" method="post">
+<button type="submit" class="button is-success">Prueba</button>
 
+<p id="demo">Este parrafo cambiara.</p>
+
+</form>
 
 </body>
 </html>
