@@ -4,13 +4,15 @@ const net = require('net')
 const bodyParser = require('body-parser')
 const app = express()
 
+const sqlite3 = require('sqlite3').verbose();
+let db = new sqlite3.Database('inbox.db');
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(__dirname+'public'))
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname+'/public/inbox.html')))
-app.get('/form.html', (req, res) => res.sendFile(path.join(__dirname+'/public/form.html')))
+app.get('/', (req, res) => res.sendFile(path.join(__dirname+'/inbox.html')))
+app.get('/form.html', (req, res) => res.sendFile(path.join(__dirname+'/form.html')))
 
 
 
@@ -20,10 +22,18 @@ app.post('/sendEmail', (req, res) => {
   res.end()
 })
 
-app.post('/cambiar', (req,res) => {
-  cambiar()
-  var prueba = "<p> Deberia mostrar HTML</p>"
-  res.end(prueba);
+app.get('/retrieveMyEmails', (req,res) => {
+	let resultado = [];
+	let sql = `SELECT * FROM Recibidos`;
+
+  db.serialize(function(){
+  	db.each(sql, function(err,row){
+  		resultado.push({ id: row.ID, sender: row.Sender, asunto: row.Asunto, contenido: row.Contenido})
+  	}, () => {
+  		console.log(resultado)
+  		res.send(JSON.stringify(resultado))
+  	})
+  })
 })
 
 
@@ -93,33 +103,3 @@ async function sendEmail(info){
 
 
 app.listen(8082, () => console.log('Client listening on port 8082'))
-
-
-function cambiar() {
-    //document.getElementById("demo").innerHTML = ":v ste men";
-    //console.log("HOli :v")
-
-  const sqlite3 = require('sqlite3').verbose();
- 
-  // open the database
-  let db = new sqlite3.Database('inbox.db');
-   
-  let sql = `SELECT * FROM Recibidos where ID =1`;
-   
-  db.each(sql, [], (err, row) => {
-    if (err) {
-      throw err;
-    }
-
-
-    console.log(`${row.Sender} ${row.Asunto} - ${row.Contenido}`);
-    //html = `${row.Sender} ${row.Asunto} - ${row.Contenido}`;
-    //var p = document.createElement("p");
-    //document.body.appendChild(p);
-  });
-   
-  // close the database connection
-
-  db.close();
-
-}
