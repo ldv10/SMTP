@@ -7,9 +7,11 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="jquery-3.3.1.min.js"></script>
+
 
 </head>
-<body>
+<body onload="reloadEmail()">
 
 
 
@@ -42,10 +44,26 @@
             </form>
 
 <form action = "cambiar" method="post">
-<button type="submit" class="button is-success">Prueba</button>
+<button onclick="reloadEmail()"> Recargar </button>
+<script>
 
-<p id="demo">Este parrafo cambiara.</p>
+function reloadEmail(){
+  $.getJSON("http://localhost:8082/retrieveMyEmails", (data) => {
+    let tr
+    for (var i = 0; i < data.length; i++) {
+        tr = $('<tr/>')
+        tr.append("<td>" + data[i].sender + "</td>")
+        tr.append("<td>" + data[i].asunto + "</td>")
+        tr.append("<td>" + data[i].contenido + "</td>")
+        tr.append("<td>  <span class='glyphicon glyphicon-trash' aria-hidden='true' style='cursor:pointer' onclick=''></span>' </td>")
+        $('table').append(tr);
+    }
+  })  
+}
 
+
+
+</script>
 </form>
 
 </body>
