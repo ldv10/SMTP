@@ -22,6 +22,24 @@ app.post('/sendEmail', (req, res) => {
   res.end()
 })
 
+
+app.get('/deleteEmail', (req, res) => {
+    let id = req.query.delete;
+
+    console.log(req.query.delete);
+    console.log(id)
+// delete a row based on id
+db.run(`DELETE FROM Recibidos WHERE ID=?`, id, function(err) {
+  if (err) {
+    return console.error(err.message);
+  }
+  console.log(`Row(s) deleted`);
+  res.redirect('back');
+});
+})
+
+
+
 app.get('/retrieveMyEmails', (req,res) => {
 	let resultado = [];
 	let sql = `SELECT * FROM Recibidos`;
@@ -35,6 +53,7 @@ app.get('/retrieveMyEmails', (req,res) => {
   	})
   })
 })
+
 
 
 
