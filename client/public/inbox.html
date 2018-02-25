@@ -51,15 +51,18 @@ function reloadEmail(){
   $.getJSON("http://localhost:8082/retrieveMyEmails", (data) => {
     let tr
     for (var i = 0; i < data.length; i++) {
+        var id = data[i].id; 
         tr = $('<tr/>')
         tr.append("<td>" + data[i].sender + "</td>")
         tr.append("<td>" + data[i].asunto + "</td>")
         tr.append("<td>" + data[i].contenido + "</td>")
-        tr.append("<td>  <span class='glyphicon glyphicon-trash' aria-hidden='true' style='cursor:pointer' onclick=''></span>' </td>")
+        tr.append("<td style='display: none'>" + data[i].id + "</td>")
+        tr.append("<td>  <form action='/deleteEmail' method='get'><input type='hidden' id = 'delete' name='delete' value='" + data[i].id + "'/><input type='submit' value='Borrar'/></form> </td>")
         $('table').append(tr);
     }
   })  
 }
+
 
 
 
@@ -68,3 +71,4 @@ function reloadEmail(){
 
 </body>
 </html>
+
