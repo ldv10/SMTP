@@ -26,8 +26,6 @@ app.post('/sendEmail', (req, res) => {
 app.get('/deleteEmail', (req, res) => {
     let id = req.query.delete;
 
-    console.log(req.query.delete);
-    console.log(id)
 // delete a row based on id
 db.run(`DELETE FROM Recibidos WHERE ID=?`, id, function(err) {
   if (err) {
