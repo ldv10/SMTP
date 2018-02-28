@@ -2,9 +2,12 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.regex.Pattern
+import java.util.regex.Pattern;
 
-class SMTPClient implements Runnable
+
+	
+
+class smtpClient implements Runnable
 {
 	private Socket connection;
 	private BufferedReader input;
@@ -14,13 +17,14 @@ class SMTPClient implements Runnable
 	private String dataMemory = "", fromMemory = "", toMemory = "";
 	private static final String EMPTY_STRING = "";
 	//private DatabaseConnection db;
-	private String dominio = "leonel.com";
+	private String dominio = "leonel@hotmail.com";
 	private String ok = "250";
 	private String mailFrom = "leonel@leonel.com";
 	private String recipiente = "diego@sosa.com";
 	private String dataMen = "Prueba :v";
+
 	
-	public SMTPClient(Socket connection) throws Exception
+	public smtpClient(Socket connection) throws Exception
 	{
 		this.connection = connection;
 		this.input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -36,25 +40,36 @@ class SMTPClient implements Runnable
 	
 		while(!quitOK && whoami.isAlive())
 		{
+			//writeSocket("HELO " + dominio + "\n");
 			String currentCommand = readSocket();
+			System.out.println("heloOK "+this.heloOK);
+			System.out.println("fromOK "+this.fromOK);
+			System.out.println("rcptOK "+this.rcptOK);
+			System.out.println("dataOK "+this.dataOK);
+			System.out.println("breakOK "+this.breakOK);
 			if(!breakOK && !dataOK && !rcptOK && !fromOK && !heloOK)
 			{
-				this.heloOK = processHelo(currentCommand);
+				System.out.println("heloOK");
+				processHelo(currentCommand);
 			} 
 			else if (!breakOK && !dataOK && !rcptOK && !fromOK && heloOK)
 			{
+				System.out.println("fromOK");
 				this.fromOK = processMailFrom(currentCommand);
 			}
 			else if (!breakOK && !dataOK && !rcptOK && fromOK && heloOK)
 			{
+				System.out.println("rptOK");
 				this.rcptOK = processRcptTo(currentCommand);
 			}
 			else if (!breakOK && !dataOK && rcptOK && fromOK && heloOK)
 			{
+				System.out.println("dataOK");
 				this.dataOK = processData(currentCommand);
 			}
 			else if (!breakOK && dataOK && rcptOK && fromOK && heloOK)
 			{
+				System.out.println("breakOK");
 				processBreak(currentCommand);
 			} else {
 				if(!processQuit(currentCommand))
@@ -63,15 +78,18 @@ class SMTPClient implements Runnable
 				}
 			}
 	  }
-	  this.db.closeConnection();
+	  //this.db.closeConnection();
 	  closeSocket();
 	}
 	//Envia el HELO
-	private boolean processHelo(String data)
+	private void processHelo(String data)
 	{
-			
-		writeSocket("HELO " + dominio + "\n");
-		return true;		
+		if (data.substring(0,3).equals("200")){
+			writeSocket("HELO " + dominio + "\n");
+			System.out.println(this.heloOK);
+			this.heloOK = true;
+			System.out.println(this.heloOK);	
+		}
 	}
 
 
@@ -84,7 +102,7 @@ class SMTPClient implements Runnable
 
 	private boolean processRcptTo(String data)
 	{			
-			writeSocket("RCPT TO: " + recipiente + "\n")
+			writeSocket("RCPT TO: " + recipiente + "\n");
 			return true;											
 	}
 	
@@ -93,7 +111,7 @@ class SMTPClient implements Runnable
 
 			writeSocket("Data\n");
 			writeSocket(dataMen+ "\n");
-			writeSocket(".");
+			writeSocket(".\n");
 			return true;
 	}
 
